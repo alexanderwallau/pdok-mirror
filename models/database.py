@@ -17,58 +17,57 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from peewee import *
+import peewee
+
+db = peewee.SqliteDatabase('pdoc.sqlite', threadlocals=True)
 
 
-db = SqliteDatabase('pdoc.sqlite', threadlocals=True)
-
-
-class Wahlperiode(Model):
+class Wahlperiode(peewee.Model):
     """Model for keeping track of different election periods."""
 
-    # Identifier in database
-    dbid = PrimaryKeyField()
+    # Identifier in the database
+    dbid = peewee.PrimaryKeyField()
 
     # Wahlperiodennummer
-    period_no = CharField(index=True)
+    period_no = peewee.CharField(index=True)
 
     # Highest seen Plenarprotokoll number
-    plenary_max = IntegerField(default=0)
+    plenary_max = peewee.IntegerField(default=0)
     # Highest seen Drucksache number
-    drucksache_max = IntegerField(default=0)
+    drucksache_max = peewee.IntegerField(default=0)
 
     # Period scraped
-    period_scraped = BooleanField(default=False)
+    period_scraped = peewee.BooleanField(default=False)
     # Period uploaded to Archive
-    period_uploaded = BooleanField(default=False)
+    period_uploaded = peewee.BooleanField(default=False)
 
     class Meta:
-        """Meta information about model."""
+        """Meta information about the model."""
 
         database = db
 
 
-class Document(Model):
+class Document(peewee.Model):
     """Base model for more specific document types."""
 
     # Database identifier
-    dbid = PrimaryKeyField()
+    dbid = peewee.PrimaryKeyField()
 
-    # Document number (e.g. 18/001 or 17/14600)
-    docno = CharField(index=True)
+    # Document number (e.g., 18/001 or 17/14600)
+    docno = peewee.CharField(index=True)
     # Internet Archive Identifier
-    archive_ident = CharField(null=True)
+    archive_ident = peewee.CharField(null=True)
     # Title of the document
-    title = CharField()
+    title = peewee.CharField()
     # Veröffentlichungsdatum
-    date = DateTimeField()
+    date = peewee.DateTimeField()
     # Path to the file
-    path = CharField()
+    path = peewee.CharField()
     # Source URL
-    source = CharField()
+    source = peewee.CharField()
 
     class Meta:
-        """Meta information about model."""
+        """Meta information about the model."""
 
         database = db
 
@@ -77,21 +76,20 @@ class Drucksache(Document):
     """Drucksache - Anfrage, Gesetz, ..."""
 
     # Doctype - Kleine Anfrage, Gesetz, ...
-    doctype = CharField()
+    doctype = peewee.CharField()
     # Urheber - originating legal body
-    urheber = CharField(null=True)
+    urheber = peewee.CharField(null=True)
     # Autor - actual person(s) who wrote this
-    autor = CharField(null=True)
-    # Wahlperiode (currently 01,02,...,18)
-    period = ForeignKeyField(Wahlperiode, related_name='drucksachen')
+    autor = peewee.CharField(null=True)
+    # Wahlperiode (currently 01, 02, ..., 18)
+    period = peewee.ForeignKeyField(Wahlperiode, related_name='drucksachen')
 
 
 class Plenarprotokoll(Document):
     """Plenarprotokoll."""
 
-    # Wahlperiode (currently 01,02,...,18)
-    period = ForeignKeyField(Wahlperiode, related_name='plenarprotokolle')
-    pass
+    # Wahlperiode (currently 01, 02, ..., 18)
+    period = peewee.ForeignKeyField(Wahlperiode, related_name='plenarprotokolle')
 
 
 def setup():

@@ -74,7 +74,7 @@ def download(url, filename, session=None, retry=0):
     # Check if we have actually downloaded a PDF file
     if not is_pdf(filename):
         if retry >= 3:
-            print "ERROR: Downloaded file", filename, "appears to not be a PDF. Using anyway."
+            print("ERROR: Downloaded file", filename, "appears to not be a PDF. Using anyway.")
             return filename
         time.sleep(1)
         download(url, filename, session, retry + 1)
@@ -104,7 +104,7 @@ def get_html(url, session=None):
             time.sleep(1)
 
     if req.status_code != 200:
-        print "ERROR: get_html failed, status code", req.status_code, "on URL", url
+        print("ERROR: get_html failed, status code", req.status_code, "on URL", url)
         return
     return req.text
 
@@ -126,7 +126,7 @@ def pdf_to_text(files):
         subprocess.Popen(["pdftotext"], stdout=devnull, stderr=devnull).communicate()
     except OSError as e:
         if e.errno == os.errno.ENOENT:
-            print "WARN: Please install pdftotext to enable automatic conversion to text files"
+            print("WARN: Please install pdftotext to enable automatic conversion to text files")
             return
         else:
             raise e
