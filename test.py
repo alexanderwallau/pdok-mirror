@@ -18,13 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from controller import scraper, uploader
 
-max_period = 18
-
-for i in range(1, 19, 1):
+for i in range(1, 20, 1):
     scraper.scrape_period(i, max_period)
-    uploader.upload_legislaturperiode(i)
+    # Uncomment to upload
+    # uploader.upload_legislaturperiode(i)
 
 
-# max_period = 18
-# for i in range(1, max_period + 1):
-#     scraper.scrape_period(i, max_period)
